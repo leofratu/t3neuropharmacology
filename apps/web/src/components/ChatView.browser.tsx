@@ -210,6 +210,7 @@ function createMockEnvironmentApi(input: {
     filesystem: {
       browse: input.browse,
     },
+    neuropharm: {} as EnvironmentApi["neuropharm"],
     sourceControl: {} as EnvironmentApi["sourceControl"],
     vcs: {} as EnvironmentApi["vcs"],
     git: {} as EnvironmentApi["git"],
