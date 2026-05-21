@@ -5,6 +5,31 @@ import {
   type VcsStatusResult,
   type VcsStatusStreamEvent,
   type LocalApi,
+  type NeuropharmBasicsPackInput,
+  type NeuropharmBasicsPackResult,
+  type NeuropharmCompoundComparisonInput,
+  type NeuropharmCompoundComparisonResult,
+  type NeuropharmCompoundLookupInput,
+  type NeuropharmCompoundLookupResult,
+  type NeuropharmDatabaseSyncInput,
+  type NeuropharmDatabaseSyncResult,
+  type NeuropharmLocalDatabaseDownloadInput,
+  type NeuropharmLocalDatabaseDownloadResult,
+  type NeuropharmLocalDatabaseStatusInput,
+  type NeuropharmLocalDatabaseStatusResult,
+  type NeuropharmLocalSearchInput,
+  type NeuropharmLocalSearchResult,
+  type NeuropharmEvidencePackResult,
+  type NeuropharmEvidencePackInput,
+  type NeuropharmEvidenceRecord,
+  type NeuropharmGenerateGraphSpecInput,
+  type NeuropharmGraphSpec,
+  type NeuropharmImportDocumentInput,
+  type NeuropharmAnalysisInput,
+  type NeuropharmAnalysisResult,
+  type NeuropharmSearchLibraryInput,
+  type NeuropharmSearchSourcesInput,
+  type NeuropharmSearchSourcesResult,
   ORCHESTRATION_WS_METHODS,
   type ServerSettingsPatch,
   WS_METHODS,
@@ -72,6 +97,48 @@ export interface WsRpcClient {
   };
   readonly filesystem: {
     readonly browse: RpcUnaryMethod<typeof WS_METHODS.filesystemBrowse>;
+  };
+  readonly neuropharm: {
+    readonly searchSources: (
+      input: NeuropharmSearchSourcesInput,
+    ) => Promise<NeuropharmSearchSourcesResult>;
+    readonly importDocument: (
+      input: NeuropharmImportDocumentInput,
+    ) => Promise<NeuropharmEvidenceRecord>;
+    readonly installBasicsPack: (
+      input: NeuropharmBasicsPackInput,
+    ) => Promise<NeuropharmBasicsPackResult>;
+    readonly searchLibrary: (
+      input: NeuropharmSearchLibraryInput,
+    ) => Promise<ReadonlyArray<NeuropharmEvidenceRecord>>;
+    readonly buildEvidencePack: (
+      input: NeuropharmEvidencePackInput,
+    ) => Promise<NeuropharmEvidencePackResult>;
+    readonly generateGraphSpec: (
+      input: NeuropharmGenerateGraphSpecInput,
+    ) => Promise<NeuropharmGraphSpec>;
+    readonly analyze: (input: NeuropharmAnalysisInput) => Promise<NeuropharmAnalysisResult>;
+    readonly syncDatabases: (
+      input: NeuropharmDatabaseSyncInput,
+    ) => Promise<NeuropharmDatabaseSyncResult>;
+    readonly lookupCompound: (
+      input: NeuropharmCompoundLookupInput,
+    ) => Promise<NeuropharmCompoundLookupResult>;
+    readonly compareCompounds: (
+      input: NeuropharmCompoundComparisonInput,
+    ) => Promise<NeuropharmCompoundComparisonResult>;
+    readonly downloadDatabases: (
+      input: NeuropharmLocalDatabaseDownloadInput,
+    ) => Promise<NeuropharmLocalDatabaseDownloadResult>;
+    readonly databaseStatus: (
+      input: NeuropharmLocalDatabaseStatusInput,
+    ) => Promise<NeuropharmLocalDatabaseStatusResult>;
+    readonly searchLocalReceptors: (
+      input: NeuropharmLocalSearchInput,
+    ) => Promise<NeuropharmLocalSearchResult>;
+    readonly searchLocalInteractions: (
+      input: NeuropharmLocalSearchInput,
+    ) => Promise<NeuropharmLocalSearchResult>;
   };
   readonly sourceControl: {
     readonly lookupRepository: RpcUnaryMethod<typeof WS_METHODS.sourceControlLookupRepository>;
@@ -184,6 +251,36 @@ export function createWsRpcClient(transport: WsTransport): WsRpcClient {
     },
     filesystem: {
       browse: (input) => transport.request((client) => client[WS_METHODS.filesystemBrowse](input)),
+    },
+    neuropharm: {
+      searchSources: (input) =>
+        transport.request((client) => client[WS_METHODS.neuropharmSearchSources](input)),
+      importDocument: (input) =>
+        transport.request((client) => client[WS_METHODS.neuropharmImportDocument](input)),
+      installBasicsPack: (input) =>
+        transport.request((client) => client[WS_METHODS.neuropharmInstallBasicsPack](input)),
+      searchLibrary: (input) =>
+        transport.request((client) => client[WS_METHODS.neuropharmSearchLibrary](input)),
+      buildEvidencePack: (input) =>
+        transport.request((client) => client[WS_METHODS.neuropharmBuildEvidencePack](input)),
+      generateGraphSpec: (input) =>
+        transport.request((client) => client[WS_METHODS.neuropharmGenerateGraphSpec](input)),
+      analyze: (input) =>
+        transport.request((client) => client[WS_METHODS.neuropharmAnalyze](input)),
+      syncDatabases: (input) =>
+        transport.request((client) => client[WS_METHODS.neuropharmSyncDatabases](input)),
+      lookupCompound: (input) =>
+        transport.request((client) => client[WS_METHODS.neuropharmLookupCompound](input)),
+      compareCompounds: (input) =>
+        transport.request((client) => client[WS_METHODS.neuropharmCompareCompounds](input)),
+      downloadDatabases: (input) =>
+        transport.request((client) => client[WS_METHODS.neuropharmDownloadDatabases](input)),
+      databaseStatus: (input) =>
+        transport.request((client) => client[WS_METHODS.neuropharmDatabaseStatus](input)),
+      searchLocalReceptors: (input) =>
+        transport.request((client) => client[WS_METHODS.neuropharmSearchLocalReceptors](input)),
+      searchLocalInteractions: (input) =>
+        transport.request((client) => client[WS_METHODS.neuropharmSearchLocalInteractions](input)),
     },
     sourceControl: {
       lookupRepository: (input) =>
