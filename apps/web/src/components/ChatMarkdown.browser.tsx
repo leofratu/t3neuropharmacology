@@ -138,4 +138,136 @@ describe("ChatMarkdown", () => {
       await screen.unmount();
     }
   });
+
+  it("renders supported Mermaid flowcharts instead of plain code blocks", async () => {
+    const screen = await render(
+      <ChatMarkdown
+        text={`\`\`\`mermaid
+flowchart LR
+  Compound["AF710B"] --> Receptor["M1 receptor"]
+  Receptor -- "positive allosteric modulation" --> Cognition["cognitive domain"]
+\`\`\``}
+        cwd="/repo/project"
+      />,
+    );
+
+    try {
+      await expect.element(page.getByText("Flow chart")).toBeInTheDocument();
+      await expect.element(page.getByTitle("AF710B")).toBeInTheDocument();
+      await expect.element(page.getByTitle("M1 receptor")).toBeInTheDocument();
+      await expect.element(page.getByTitle("cognitive domain")).toBeInTheDocument();
+      await expect.element(page.getByText(/positive allosteric modulation/)).toBeInTheDocument();
+      await expect.element(page.getByText(/AF710B ->/)).not.toBeInTheDocument();
+    } finally {
+      await screen.unmount();
+    }
+  });
+
+  it("renders common Mermaid edge variants without exposing raw syntax", async () => {
+    const screen = await render(
+      <ChatMarkdown
+        text={`\`\`\`mermaid
+graph TD
+  A["AF710B"] -- PAM-like --> B["M1 receptor"]
+  B -. "uncertain translation" .-> C["human cognition"]
+\`\`\``}
+        cwd="/repo/project"
+      />,
+    );
+
+    try {
+      await expect.element(page.getByText("Flow chart")).toBeInTheDocument();
+      await expect.element(page.getByTitle("AF710B")).toBeInTheDocument();
+      await expect.element(page.getByTitle("M1 receptor")).toBeInTheDocument();
+      await expect.element(page.getByTitle("human cognition")).toBeInTheDocument();
+      await expect.element(page.getByText("PAM-like")).toBeInTheDocument();
+      await expect.element(page.getByText("uncertain translation")).toBeInTheDocument();
+      await expect.element(page.getByText(/A\\["AF710B"\\]/)).not.toBeInTheDocument();
+    } finally {
+      await screen.unmount();
+    }
+  });
+
+  it("renders target_network neuropharm graph blocks as network panels", async () => {
+    const screen = await render(
+      <ChatMarkdown
+        text={`\`\`\`neuropharm-graph
+{"kind":"target_network","title":"AF710B target map","data":[{"label":"M1 / CHRM1","value":82,"group":"AF710B","unit":"measured"},{"label":"SIGMAR1","value":60,"group":"AF710B","unit":"inferred"}],"notes":["Local rows first; literature second."]}
+\`\`\``}
+        cwd="/repo/project"
+      />,
+    );
+
+    try {
+      await expect.element(page.getByText("AF710B target map")).toBeInTheDocument();
+      await expect
+        .element(page.getByText("Compound / target / evidence-strength network"))
+        .toBeInTheDocument();
+      await expect.element(page.getByTitle("AF710B")).toBeInTheDocument();
+      await expect.element(page.getByTitle("M1 / CHRM1")).toBeInTheDocument();
+      await expect.element(page.getByTitle("SIGMAR1")).toBeInTheDocument();
+      await expect
+        .element(page.getByText("Local rows first; literature second."))
+        .toBeInTheDocument();
+    } finally {
+      await screen.unmount();
+    }
+  });
+
+  it("auto-renders standardized neuropharm graph blocks", async () => {
+    const screen = await render(
+      <ChatMarkdown
+        text={`\`\`\`neuropharm-graph
+{"kind":"receptor_selectivity_radar","title":"AF710B receptor selectivity","data":[{"label":"M1","value":82,"group":"AF710B"},{"label":"SIGMAR1","value":64,"group":"AF710B"},{"label":"DAT","value":12,"group":"AF710B"}],"notes":["Normalized 0-100 mechanism panel."]}
+\`\`\`
+
+\`\`\`neuropharm-graph
+{"kind":"interaction_risk_heatmap","title":"Stack risk matrix","data":[{"label":"BP","value":70,"group":"methylphenidate"},{"label":"sleep","value":60,"group":"methylphenidate"},{"label":"BP","value":15,"group":"AF710B"},{"label":"sleep","value":20,"group":"AF710B"}],"notes":["Risk values are relative, not medical advice."]}
+\`\`\`
+
+\`\`\`neuropharm-graph
+{"kind":"pk_timeline","title":"Methylphenidate exposure sketch","data":[{"label":"0 h","value":0,"unit":"relative"},{"label":"2 h","value":100,"unit":"relative"},{"label":"6 h","value":30,"unit":"relative"}],"notes":["Illustrative timing panel."]}
+\`\`\``}
+        cwd="/repo/project"
+      />,
+    );
+
+    try {
+      await expect.element(page.getByText("AF710B receptor selectivity")).toBeInTheDocument();
+      await expect
+        .element(page.getByLabelText("AF710B receptor selectivity radar chart"))
+        .toBeInTheDocument();
+      await expect.element(page.getByText("Stack risk matrix")).toBeInTheDocument();
+      await expect.element(page.getByText("Matrix heatmap, normalized 0-100")).toBeInTheDocument();
+      await expect.element(page.getByText("Methylphenidate exposure sketch")).toBeInTheDocument();
+      await expect.element(page.getByText("Ordered exposure/effect timeline")).toBeInTheDocument();
+      await expect
+        .element(page.getByText(/"kind":"receptor_selectivity_radar"/))
+        .not.toBeInTheDocument();
+    } finally {
+      await screen.unmount();
+    }
+  });
+
+  it("auto-detects neuropharm graph JSON from plain json fences", async () => {
+    const screen = await render(
+      <ChatMarkdown
+        text={`\`\`\`json
+{"kind":"task_domain_matrix","title":"Cognition task matrix","data":[{"label":"attention","value":65,"group":"methylphenidate"},{"label":"working memory","value":35,"group":"methylphenidate"}],"notes":["Plain json fence should still render as a graph."]}
+\`\`\``}
+        cwd="/repo/project"
+      />,
+    );
+
+    try {
+      await expect.element(page.getByText("Cognition task matrix")).toBeInTheDocument();
+      await expect.element(page.getByText("Matrix heatmap, normalized 0-100")).toBeInTheDocument();
+      await expect
+        .element(page.getByText("Plain json fence should still render as a graph."))
+        .toBeInTheDocument();
+      await expect.element(page.getByText(/"kind":"task_domain_matrix"/)).not.toBeInTheDocument();
+    } finally {
+      await screen.unmount();
+    }
+  });
 });
