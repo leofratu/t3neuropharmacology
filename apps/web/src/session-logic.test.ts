@@ -1,6 +1,7 @@
 import {
   EventId,
   MessageId,
+  ProviderDriverKind,
   ThreadId,
   TurnId,
   type OrchestrationThreadActivity,
@@ -11,6 +12,7 @@ import {
   deriveCompletionDividerBeforeEntryId,
   deriveActiveWorkStartedAt,
   deriveActivePlanState,
+  derivePhase,
   derivePendingApprovals,
   derivePendingUserInputs,
   deriveTimelineEntries,
@@ -21,6 +23,7 @@ import {
   hasToolActivityForTurn,
   isLatestTurnSettled,
 } from "./session-logic";
+import type { ThreadSession } from "./types";
 
 function makeActivity(overrides: {
   id?: string;
@@ -42,6 +45,18 @@ function makeActivity(overrides: {
     payload,
     turnId: overrides.turnId ? TurnId.make(overrides.turnId) : null,
     ...(overrides.sequence !== undefined ? { sequence: overrides.sequence } : {}),
+  };
+}
+
+function makeSession(overrides: Partial<ThreadSession> = {}): ThreadSession {
+  return {
+    provider: ProviderDriverKind.make("codex"),
+    status: "ready",
+    orchestrationStatus: "ready",
+    activeTurnId: undefined,
+    createdAt: "2026-02-23T00:00:00.000Z",
+    updatedAt: "2026-02-23T00:00:00.000Z",
+    ...overrides,
   };
 }
 
@@ -1514,5 +1529,31 @@ describe("deriveActiveWorkStartedAt", () => {
         "2026-02-27T21:11:00.000Z",
       ),
     ).toBe("2026-02-27T21:11:00.000Z");
+  });
+});
+
+describe("derivePhase", () => {
+  it("does not leave the composer stuck running after interruption", () => {
+    expect(
+      derivePhase(
+        makeSession({
+          status: "running",
+          orchestrationStatus: "interrupted",
+          activeTurnId: undefined,
+        }),
+      ),
+    ).toBe("ready");
+  });
+
+  it("does not leave the composer stuck running after provider errors", () => {
+    expect(
+      derivePhase(
+        makeSession({
+          status: "running",
+          orchestrationStatus: "error",
+          activeTurnId: undefined,
+        }),
+      ),
+    ).toBe("ready");
   });
 });
