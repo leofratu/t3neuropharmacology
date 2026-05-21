@@ -23,6 +23,22 @@ export function createEnvironmentApi(rpcClient: WsRpcClient): EnvironmentApi {
     filesystem: {
       browse: rpcClient.filesystem.browse,
     },
+    neuropharm: {
+      searchSources: rpcClient.neuropharm.searchSources,
+      importDocument: rpcClient.neuropharm.importDocument,
+      installBasicsPack: rpcClient.neuropharm.installBasicsPack,
+      searchLibrary: rpcClient.neuropharm.searchLibrary,
+      buildEvidencePack: rpcClient.neuropharm.buildEvidencePack,
+      generateGraphSpec: rpcClient.neuropharm.generateGraphSpec,
+      analyze: rpcClient.neuropharm.analyze,
+      syncDatabases: rpcClient.neuropharm.syncDatabases,
+      lookupCompound: rpcClient.neuropharm.lookupCompound,
+      compareCompounds: rpcClient.neuropharm.compareCompounds,
+      downloadDatabases: rpcClient.neuropharm.downloadDatabases,
+      databaseStatus: rpcClient.neuropharm.databaseStatus,
+      searchLocalReceptors: rpcClient.neuropharm.searchLocalReceptors,
+      searchLocalInteractions: rpcClient.neuropharm.searchLocalInteractions,
+    },
     sourceControl: {
       lookupRepository: rpcClient.sourceControl.lookupRepository,
       cloneRepository: rpcClient.sourceControl.cloneRepository,
