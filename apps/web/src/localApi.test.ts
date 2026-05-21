@@ -56,6 +56,15 @@ const rpcClientMock = {
   filesystem: {
     browse: vi.fn(),
   },
+  neuropharm: {
+    searchSources: vi.fn(),
+    importDocument: vi.fn(),
+    searchLibrary: vi.fn(),
+    buildEvidencePack: vi.fn(),
+    generateGraphSpec: vi.fn(),
+    analyze: vi.fn(),
+    installBasicsPack: vi.fn(),
+  },
   sourceControl: {
     lookupRepository: vi.fn(),
     cloneRepository: vi.fn(),
@@ -480,6 +489,65 @@ describe("wsApi", () => {
     expect(rpcClientMock.filesystem.browse).toHaveBeenCalledWith({
       partialPath: "/tmp/project/",
       cwd: "/tmp/project",
+    });
+  });
+
+  it("forwards neuropharm analysis requests to the RPC client", async () => {
+    const result = {
+      analysisId: "analysis-1",
+      mode: "compound_profile",
+      title: "compound profile: modafinil",
+      generatedAt: "2026-05-21T00:00:00.000Z",
+      estimate: {
+        query: "modafinil",
+        summary: "Research scaffold.",
+        confidence: "low",
+        assumptions: [],
+        riskFlags: [],
+        evidence: [],
+      },
+      graphSpecs: [],
+      graphNodes: [],
+      graphEdges: [],
+      diagrams: [],
+      powerUserNotes: [],
+      safetyNotices: [],
+    } as const;
+    rpcClientMock.neuropharm.analyze.mockResolvedValue(result);
+    const { createEnvironmentApi } = await import("./environmentApi");
+
+    const api = createEnvironmentApi(rpcClientMock as never);
+    await expect(
+      api.neuropharm.analyze({
+        mode: "compound_profile",
+        query: "modafinil",
+        powerUser: true,
+      }),
+    ).resolves.toEqual(result);
+
+    expect(rpcClientMock.neuropharm.analyze).toHaveBeenCalledWith({
+      mode: "compound_profile",
+      query: "modafinil",
+      powerUser: true,
+    });
+  });
+
+  it("forwards neuropharm basics-pack installs to the RPC client", async () => {
+    const result = {
+      packId: "neuropharm-basics-m1-af710b-cognition-v1",
+      imported: [],
+      topics: ["M1 receptor basics"],
+    };
+    rpcClientMock.neuropharm.installBasicsPack.mockResolvedValue(result);
+    const { createEnvironmentApi } = await import("./environmentApi");
+
+    const api = createEnvironmentApi(rpcClientMock as never);
+    await expect(api.neuropharm.installBasicsPack({ forceRefresh: false })).resolves.toEqual(
+      result,
+    );
+
+    expect(rpcClientMock.neuropharm.installBasicsPack).toHaveBeenCalledWith({
+      forceRefresh: false,
     });
   });
 
