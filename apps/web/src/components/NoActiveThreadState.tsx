@@ -20,47 +20,44 @@ export function NoActiveThreadState() {
         >
           {isElectron ? (
             <span className="text-xs text-muted-foreground/50 wco:pr-[calc(100vw-env(titlebar-area-width)-env(titlebar-area-x)+1em)]">
-              No active analysis
+              Neuropharm Research
             </span>
           ) : (
             <div className="flex items-center gap-2">
               <SidebarTrigger className="size-7 shrink-0 md:hidden" />
               <span className="text-sm font-medium text-foreground md:text-muted-foreground/60">
-                No active analysis
+                Neuropharm Research
               </span>
             </div>
           )}
         </header>
 
         <Empty className="flex-1">
-          <div className="w-full max-w-6xl px-6 py-8">
+          <div className="w-full max-w-7xl px-6 py-8">
             <EmptyHeader className="max-w-none">
-              <EmptyTitle className="text-foreground text-xl">
+              <EmptyTitle className="text-foreground text-2xl font-semibold">
                 Neuropharm research workspace
               </EmptyTitle>
-              <EmptyDescription className="mt-2 text-sm text-muted-foreground/78">
-                Build compound profiles, receptor maps, stack checks, evidence graphs, diagrams,
-                standardized figures, and LaTeX reports from local-first research evidence.
+              <EmptyDescription className="mt-3 text-sm text-muted-foreground/78">
+                Analyze pharmacological compounds, receptor interactions, and cognitive effects
+                using curated databases from PubChem, ChEMBL, IUPHAR, and PubMed. Generate
+                evidence-based reports with standardized figures and confidence ratings.
               </EmptyDescription>
             </EmptyHeader>
-            <div className="mt-6">
+            <div className="mt-8">
               <NeuropharmWorkspacePanel />
             </div>
-            <div className="mt-6">
+            <div className="mt-8">
               <ResearchConsole />
             </div>
-            <div className="mt-6">
+            <div className="mt-8">
               <DatabaseConsole />
             </div>
-            <div className="mt-6 grid gap-2 text-left text-xs text-muted-foreground sm:grid-cols-3">
-              <div className="rounded-md border border-border/60 bg-background/60 p-3">
-                Power-user mode can extrapolate, but unsupported claims stay labeled.
-              </div>
-              <div className="rounded-md border border-border/60 bg-background/60 p-3">
-                Concrete pharmacology claims should carry citations or low-confidence markers.
-              </div>
-              <div className="rounded-md border border-border/60 bg-background/60 p-3">
-                Research protocol ranges are not personalized medical instructions.
+            <div className="mt-8">
+              <div className="rounded-md border border-amber-600/30 bg-amber-50/40 p-4 text-xs text-muted-foreground dark:border-amber-600/20 dark:bg-amber-950/10">
+                Research mode: All pharmacological claims are labeled with evidence strength.
+                Unsupported extrapolations and low-confidence predictions are clearly marked. This
+                tool generates research summaries, not medical advice.
               </div>
             </div>
           </div>

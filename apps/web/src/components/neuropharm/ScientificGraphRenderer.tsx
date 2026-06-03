@@ -51,15 +51,15 @@ const TargetNetworkRenderer = memo(function TargetNetworkRenderer(props: {
         props.className,
       )}
     >
-      <div className="mb-3 flex min-w-0 items-center justify-between gap-2">
+      <div className="mb-4 flex min-w-0 items-center justify-between gap-2">
         <div className="min-w-0">
           <div className="truncate text-sm font-medium">{props.spec.title}</div>
           <div className="text-xs text-muted-foreground">
-            Compound / target / evidence-strength network
+            Receptor binding strengths by evidence grade
           </div>
         </div>
         <Badge variant="outline" className="uppercase">
-          target network
+          TARGET NETWORK
         </Badge>
       </div>
 
@@ -168,13 +168,15 @@ const RadarGraphRenderer = memo(function RadarGraphRenderer(props: {
         props.className,
       )}
     >
-      <div className="mb-3 flex min-w-0 items-center justify-between gap-2">
+      <div className="mb-4 flex min-w-0 items-center justify-between gap-2">
         <div className="min-w-0">
           <div className="truncate text-sm font-medium">{props.spec.title}</div>
-          <div className="text-xs text-muted-foreground">Standardized 0-100 radar panel</div>
+          <div className="text-xs text-muted-foreground">Normalized selectivity profile</div>
         </div>
         <Badge variant="outline" className="uppercase">
-          {props.spec.kind.replaceAll("_", " ")}
+          {props.spec.kind === "receptor_selectivity_radar"
+            ? "SELECTIVITY PROFILE"
+            : "ADMET PROFILE"}
         </Badge>
       </div>
       <div className="grid gap-3 md:grid-cols-[15rem_1fr]">
@@ -300,13 +302,15 @@ const HeatmapGraphRenderer = memo(function HeatmapGraphRenderer(props: {
         props.className,
       )}
     >
-      <div className="mb-3 flex min-w-0 items-center justify-between gap-2">
+      <div className="mb-4 flex min-w-0 items-center justify-between gap-2">
         <div className="min-w-0">
           <div className="truncate text-sm font-medium">{props.spec.title}</div>
-          <div className="text-xs text-muted-foreground">Matrix heatmap, normalized 0-100</div>
+          <div className="text-xs text-muted-foreground">Risk matrix (0-100 scale)</div>
         </div>
         <Badge variant="outline" className="uppercase">
-          {props.spec.kind.replaceAll("_", " ")}
+          {props.spec.kind === "interaction_risk_heatmap"
+            ? "INTERACTION RISKS"
+            : "COGNITIVE DOMAINS"}
         </Badge>
       </div>
       <div className="overflow-x-auto">
@@ -370,13 +374,13 @@ const TimelineGraphRenderer = memo(function TimelineGraphRenderer(props: {
         props.className,
       )}
     >
-      <div className="mb-3 flex min-w-0 items-center justify-between gap-2">
+      <div className="mb-4 flex min-w-0 items-center justify-between gap-2">
         <div className="min-w-0">
           <div className="truncate text-sm font-medium">{props.spec.title}</div>
-          <div className="text-xs text-muted-foreground">Ordered exposure/effect timeline</div>
+          <div className="text-xs text-muted-foreground">Pharmacokinetic profile</div>
         </div>
         <Badge variant="outline" className="uppercase">
-          pk timeline
+          PK TIMELINE
         </Badge>
       </div>
       <div className="overflow-x-auto pb-1">
@@ -460,7 +464,7 @@ export function ScientificGraphRenderer(props: { spec: NeuropharmGraphSpec; clas
         props.className,
       )}
     >
-      <div className="mb-3 flex min-w-0 items-center justify-between gap-2">
+      <div className="mb-4 flex min-w-0 items-center justify-between gap-2">
         <div className="min-w-0">
           <div className="truncate text-sm font-medium">{props.spec.title}</div>
           <div className="text-xs text-muted-foreground">
