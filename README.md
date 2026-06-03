@@ -1,33 +1,21 @@
 # Neuropharm Research
 
-Neuropharm Research is a local-first neuropharmacology workspace for receptor
-exploration, compound profiling, stack checking, database-grounded estimates,
-scientific diagrams, standardized graph panels, and LaTeX-ready reports.
+Neuropharm Research is a local-first neuropharmacology workspace for analyzing pharmacological compounds, receptor interactions, and cognitive effects using curated databases from PubChem, ChEMBL, IUPHAR, and PubMed.
 
-The project started from the T3 Code agent UI/runtime, but the product direction
-is now a pharmacology research cockpit. The remaining orchestration
-infrastructure runs model sessions and local tools; the user-facing workflows
-focus on compounds, receptors, evidence, mechanisms, uncertainty, risks, and
-research artifacts.
+The interface provides research-focused tools for compound profiling, interaction checking, evidence grading, pharmacokinetic analysis, and generating publication-ready reports with confidence ratings.
 
-## What it does
+## Features
 
-- Builds compound profiles with target hypotheses, receptor/transporter rows,
-  PK/PD prompts, risks, citations, diagrams, and graph specs.
-- Explores receptors and pathways such as CHRM1/M1, sigma-1/SIGMAR1, DAT, NET,
-  cholinergic systems, catecholamine transporters, glutamate targets, H3,
-  alpha2A, orexin, PDE, and other cognition-adjacent targets.
-- Compares compounds such as AF710B/ANAVEX 3-71 and methylphenidate as
-  mechanism networks instead of one-dimensional "enhancement" scores.
-- Installs a built-in basics pack for M1, AF710B aliases, cognitive enhancement
-  target maps, niche targets, task-domain scoring, and diagram syntax.
-- Searches local evidence notes and local/cached receptor database rows before
-  relying on model extrapolation.
-- Emits renderable `neuropharm-graph` JSON and Mermaid flowcharts in chat.
-- Produces a local XLSX tracker for compounds, targets, interactions, evidence
-  claims, graph specs, risk flags, tasks, and sources.
+- **Compound Analysis**: Analyze receptor binding, pharmacokinetics, drug interactions, and mechanism of action with confidence-rated summaries
+- **Receptor Atlas**: Explore neurotransmitter receptors, transporters, and signaling pathways with cognitive function mapping
+- **Interaction Checker**: Identify drug-drug interactions, metabolic conflicts, and safety concerns when combining compounds
+- **Cognitive Effects**: Evaluate impact on attention, memory, and executive function with dose-response curves and tolerance patterns
+- **Pharmacokinetics**: Estimate onset time, peak concentration, half-life, and active metabolites based on published data
+- **Evidence Database**: Integrates data from PubMed, PubChem, ChEMBL, and IUPHAR with source tracking and confidence grading
+- **Visualizations**: Generate receptor selectivity radars, dose-response curves, interaction heatmaps, and pharmacokinetic timelines
+- **Export Reports**: Create formatted research documents with citations, figures, and confidence ratings in LaTeX format
 
-## Local database design
+## Pharmacology Database
 
 The app supports a local receptor database under the default 1.5 GB cap. The
 manifest is intentionally focused on pharmacology rows that can be searched and
@@ -52,27 +40,27 @@ SQLite app state lives under the configured T3 state directory. The repository
 stores source code, migrations, contracts, tests, prompt policy, and the tracker
 template/artifact, not the downloaded public database archives.
 
-## Graph and diagram artifacts
+## Scientific Graphs and Visualizations
 
-The chat renderer recognizes structured neuropharmacology graph blocks:
+The application renders structured neuropharmacology graphs with evidence grading:
 
 ```neuropharm-graph
 {"kind":"target_network","title":"AF710B local target map","data":[{"label":"M1 muscarinic acetylcholine receptor","value":62,"group":"AF710B","unit":"inferred"}],"notes":["Values are evidence-weighted graph scores, not clinical effect sizes."]}
 ```
 
-Supported graph kinds include:
+Supported visualization types include:
 
-- `target_network`
-- `receptor_selectivity_radar`
-- `interaction_risk_heatmap`
-- `task_domain_matrix`
-- `pk_timeline`
-- `dose_response`
-- `effect_size_forest`
-- `inverted_u_curve`
-- `molecule_property_card`
-- `similarity_map`
-- `admet_radar`
+- `target_network` - Receptor binding strengths by evidence grade
+- `receptor_selectivity_radar` - Normalized selectivity profile
+- `interaction_risk_heatmap` - Risk matrix for drug combinations
+- `task_domain_matrix` - Cognitive domain effects
+- `pk_timeline` - Pharmacokinetic profile
+- `dose_response` - Dose-response curves
+- `effect_size_forest` - Effect size comparisons
+- `inverted_u_curve` - Inverted-U response patterns
+- `molecule_property_card` - Molecular properties
+- `similarity_map` - Compound similarity mapping
+- `admet_radar` - ADMET profile visualization
 
 Mermaid diagrams should use simple `flowchart LR` or `flowchart TD` syntax so
 they render reliably in chat.
